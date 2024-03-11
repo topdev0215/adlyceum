@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { SWRConfig } from 'swr';
 import fetchJson from 'utils/fetchJson';
 import useUser from 'utils/useUser';
+import "./Editor.css"
 
 function MyApp({ Component, pageProps }) {
     const [displayModal, setDisplayModal] = useState(false);
@@ -51,8 +52,6 @@ function MyApp({ Component, pageProps }) {
                 <meta name='robots' content='noindex'></meta>
                 <link rel='preconnect' href='https://fonts.googleapis.com' />
                 <link rel='preconnect' href='https://fonts.gstatic.com' crossOrigin='true' />
-                <link href="node_modules/froala-editor/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
-                <script type="text/javascript" src="node_modules/froala-editor/js/froala_editor.pkgd.min.js"></script>
             </Head>
             <div className='flex flex-col items-stretch justify-items-stretch overflow-y-auto'>
                 {!Component.hideNav ?

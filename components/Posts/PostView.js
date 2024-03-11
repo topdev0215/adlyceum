@@ -12,7 +12,7 @@ const PostView = ({
   previewIframe,
   editView,
 }) => {
-  const [editorContent, setEditorContent] = useState("select the tag");
+  const [editorContent, setEditorContent] = useState("Select the tag");
   const [changedContent, setChangedContent] = useState("");
   const [showFiles, setshowFiles] = useState(false);
   const toggleShowFiles = () => setshowFiles(!showFiles);
@@ -57,19 +57,19 @@ const PostView = ({
           </a>
         )}
       </div>
-      <div className="grid grid-cols-7 gap-5">
+      <div className="grid grid-cols-8 gap-5">
         <IFrame
-          className="min-h-[70vh] col-span-5 pr-5"
+          className="h-[75vh] col-span-5 pr-5"
           srcDoc={previewIframe || post.monographView}
           editView={editView}
           setEditorContent={setEditorContent}
           changedContent={changedContent}
         />
         {editView ? (
-          <aside className="col-span-2 flex flex-col gap-4 pl-5 border-[1px] border-transparent rounded-none border-l-black">
-            <Editor 
+          <aside className="col-span-3 flex flex-col gap-4 pl-5 border-[1px] border-transparent rounded-none border-l-black">
+            <Editor
             setChangedContent={setChangedContent}
-            editorContent={editorContent} 
+            editorContent={editorContent}
             />
           </aside>
         ) : (

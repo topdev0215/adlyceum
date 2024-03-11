@@ -120,6 +120,7 @@ const NewPost = (props) => {
         if (_files) {
           triggerLoading(true);
           const files = await upload(_files, true);
+          console.log("this is first files=====>", _files);
           if (e.target.name === "monograph") {
             const loadedMonograph = await getHTML(
               `/api/${files.url.replace("https://www.datocms-assets.com/", "")}`
@@ -216,6 +217,25 @@ const NewPost = (props) => {
   );
 
   const formHasChanged = formState !== formBaseState;
+
+  const saveDocument = async () => {
+    console.log("hello");
+    const iframe = document.getElementById("documentWindow");
+    const iframeContent = iframe.contentWindow.document.head.innerHTML + iframe.contentWindow.document.body.innerHTML;
+    const htmlFile = new File([iframeContent], "monograph.html",{ type: 'text/html' });
+    console.log([htmlFile]);
+    triggerLoading(true);
+    const files = await upload([htmlFile], true);
+    console.log("this is second files==========>", files);
+    const loadedMonograph = await getHTML(
+      `/api/${files.url.replace("https://www.datocms-assets.com/", "")}`
+    );
+    setPreviewIframe(loadedMonograph);
+    triggerLoading(false);
+    delete formState["monograph"];
+    setFormState({ ["monograph"]: files, ...formState });
+  } 
+
   return (
     <Main>
       {showPreview && (
@@ -225,11 +245,18 @@ const NewPost = (props) => {
             onClick={hidePreview}
             children="<div Volver a archivo"
           />
-          <a
-            className="text-other text-2xl cursor-pointer hover:text-primary hover:underline hover:underline-offset-1"
-            onClick={editViewSet}
-            children={!editView ? "Edit Document" : "Hide Editor"}
-          />
+          <div>
+            <a
+              className="text-other text-2xl cursor-pointer hover:text-primary hover:underline hover:underline-offset-1"
+              onClick={editViewSet}
+              children={!editView ? "Edit Document" : "Hide Editor"}
+            />
+            <a
+              className="text-other ml-5 text-2xl cursor-pointer hover:text-primary hover:underline hover:underline-offset-1"
+              onClick={saveDocument}
+              children="Save Document"
+            />
+          </div>
         </TopBar>
       )}
       {!showPreview && (

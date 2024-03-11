@@ -19,9 +19,7 @@ const PostForm = ({
     removeCoAuthor,
     refs
 }) => {
-    console.log("form.course",form.course)
     const selectedCourse = (courses || []).find(c=>c.id === form.course)
-    console.log({selectedCourse})
     const courseStudents = (selectedCourse?.students || []).filter(student=>student.id !== user.id)
     return (
         <form className='font-roboto grid auto-rows-auto gap-8' onSubmit={doSubmit}>
