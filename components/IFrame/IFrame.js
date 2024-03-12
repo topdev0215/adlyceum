@@ -14,7 +14,7 @@ const IFrame = ({
     event.preventDefault();
     var clickedElement = event.target;
     var parentElement = clickedElement.parentNode;
-    setEditorContent(parentElement.innerHTML);
+    setEditorContent(parentElement);
     setEditElement(parentElement);
   };
 

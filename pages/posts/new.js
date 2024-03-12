@@ -40,6 +40,7 @@ const NewPost = (props) => {
   const { user } = useUser({ redirectTo: "/" });
   const [showPreview, setShowPreview] = useState(false);
   const [editView, setEditView] = useState(false);
+  const [suggestionView, setSuggestionView] = useState(false);
   const [formState, setFormState] = useState(formBaseState);
   const [previewIframe, setPreviewIframe] = useState(null);
   const clearSubmitForm = () => {
@@ -156,11 +157,21 @@ const NewPost = (props) => {
   const hidePreview = (e) => {
     e.preventDefault();
     setShowPreview(false);
+    setEditView(false);
   };
 
   const editViewSet = (e) => {
     e.preventDefault();
     setEditView(!editView);
+    if(editView == true){
+      setSuggestionView(false)
+    }
+  };
+
+  const suggestionViewSet = (e) => {
+    e.preventDefault();
+    setSuggestionView(!suggestionView);
+    console.log("this is suggestion view status=======>", suggestionView);
   };
 
   const doShowPreview = useCallback(
@@ -221,12 +232,14 @@ const NewPost = (props) => {
   const saveDocument = async () => {
     console.log("hello");
     const iframe = document.getElementById("documentWindow");
-    const iframeContent = iframe.contentWindow.document.head.innerHTML + iframe.contentWindow.document.body.innerHTML;
-    const htmlFile = new File([iframeContent], "monograph.html",{ type: 'text/html' });
-    console.log([htmlFile]);
+    const iframeContent =
+      iframe.contentWindow.document.head.innerHTML +
+      iframe.contentWindow.document.body.innerHTML;
+    const htmlFile = new File([iframeContent], "monograph.html", {
+      type: "text/html",
+    });
     triggerLoading(true);
     const files = await upload([htmlFile], true);
-    console.log("this is second files==========>", files);
     const loadedMonograph = await getHTML(
       `/api/${files.url.replace("https://www.datocms-assets.com/", "")}`
     );
@@ -234,7 +247,7 @@ const NewPost = (props) => {
     triggerLoading(false);
     delete formState["monograph"];
     setFormState({ ["monograph"]: files, ...formState });
-  } 
+  };
 
   return (
     <Main>
@@ -246,13 +259,20 @@ const NewPost = (props) => {
             children="<div Volver a archivo"
           />
           <div>
+            {editView && (
+              <a
+                className="text-other mr-8 text-2xl cursor-pointer hover:text-primary hover:underline hover:underline-offset-1"
+                onClick={suggestionViewSet}
+                children={`${suggestionView ? "Hide Suggestion" : "Show Suggestion"}`}
+              />
+            )}
             <a
               className="text-other text-2xl cursor-pointer hover:text-primary hover:underline hover:underline-offset-1"
               onClick={editViewSet}
-              children={!editView ? "Edit Document" : "Hide Editor"}
+              children={!editView ? "Edit Document" : "Close Editor"}
             />
             <a
-              className="text-other ml-5 text-2xl cursor-pointer hover:text-primary hover:underline hover:underline-offset-1"
+              className="text-other ml-8 text-2xl cursor-pointer hover:text-primary hover:underline hover:underline-offset-1"
               onClick={saveDocument}
               children="Save Document"
             />
@@ -280,6 +300,7 @@ const NewPost = (props) => {
           user={user}
           previewIframe={previewIframe}
           editView={editView}
+          suggestionView={suggestionView}
           {...props}
         />
       ) : (

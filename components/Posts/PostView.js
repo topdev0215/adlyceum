@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import IFrame from "components/IFrame/IFrame";
 import { isPostApproved } from "utils";
 import Editor from "components/Editor/Editor";
+import Suggestion from "components/Suggestion/Suggestion";
 let options = { year: "numeric", month: "long", day: "numeric" };
 
 const PostView = ({
@@ -11,9 +12,11 @@ const PostView = ({
   editMode = false,
   previewIframe,
   editView,
+  suggestionView,
 }) => {
   const [editorContent, setEditorContent] = useState("Select the tag");
   const [changedContent, setChangedContent] = useState("");
+  const [section, setSection] = useState("Section Title");
   const [showFiles, setshowFiles] = useState(false);
   const toggleShowFiles = () => setshowFiles(!showFiles);
   const author = post?.author;
@@ -57,23 +60,27 @@ const PostView = ({
           </a>
         )}
       </div>
-      <div className="grid grid-cols-8 gap-5">
-        <IFrame
-          className="h-[75vh] col-span-5 pr-5"
-          srcDoc={previewIframe || post.monographView}
-          editView={editView}
-          setEditorContent={setEditorContent}
-          changedContent={changedContent}
-        />
+      <div className="grid grid-cols-10 gap-5 h-[85vh]">
+        <aside className={`${suggestionView ? "hidden" : "block" } h-[80vh] col-span-6 pr-5 border-[1px] border-transparent border-r-black`}>
+          <IFrame
+            className=""
+            srcDoc={previewIframe || post.monographView}
+            editView={editView}
+            setEditorContent={setEditorContent}
+            changedContent={changedContent}
+          />
+        </aside>
         {editView ? (
-          <aside className="col-span-3 flex flex-col gap-4 pl-5 border-[1px] border-transparent rounded-none border-l-black">
+          <aside className="col-span-4 flex flex-col gap-4 pl-5 rounded-none">
             <Editor
-            setChangedContent={setChangedContent}
-            editorContent={editorContent}
+              setChangedContent={setChangedContent}
+              editorContent={editorContent}
+              section={section}
+              setSection={setSection}
             />
           </aside>
         ) : (
-          <aside className="col-span-2 flex flex-col gap-4 pl-5 border-[1px] border-transparent rounded-none border-l-black">
+          <aside className="col-span-2 flex flex-col gap-4 pl-5">
             {course && (
               <h3 className="text-lg font-caslon">
                 <span className="text-primary font-roboto text-xl pr-2">
@@ -116,6 +123,15 @@ const PostView = ({
             <div className="w-full pl-4 flex flex-col gap-0">
               {showFiles && files}
             </div>
+          </aside>
+        )}
+        {suggestionView && (
+          <aside className="col-span-6 flex flex-col gap-4 pl-5 border-[1px] border-transparent rounded-none border-l-black">
+            <Suggestion
+              changedContent={changedContent}
+              setEditorContent={setEditorContent}
+              section={section}
+            />
           </aside>
         )}
       </div>

@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 from flask import Flask
+from flask_cors import CORS
 from flask import request
 from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
@@ -8,7 +9,7 @@ from langchain_core.pydantic_v1 import BaseModel, Field
 
 config = load_dotenv(override=True)
 
-model = ChatOpenAI(model="gpt-4", temperature=0)
+model = ChatOpenAI(model="gpt-4-1106-preview", temperature=0)
 
 class RestrictionCheck(BaseModel):
     restriction: str = Field(description="Restriction alert of paper")
@@ -20,8 +21,8 @@ class HeadingSuggestion(BaseModel):
     improvedHeading: str = Field(description="Improved title by the suggestion")
     
 class SectionSuggestions(BaseModel):
-    suggestion: str = Field(description="This is suggestion to improve the text")
-    improvedText: str = Field(description="This is improved text by the suggestion")
+    suggestion: str = Field(description="This is suggestion to improve the content")
+    improvedText: str = Field(description="This is improved html string by the suggestion. You must keep the html structure of content")
     alert: str = Field(description="This is the best serious alert of this section")
     aiContentRate: float = Field(description="Percentage of content identified as AI-generated.")
 
@@ -60,11 +61,11 @@ heading_prompt = PromptTemplate(
 )
 section_prompt = PromptTemplate(
     template="""
-    Given the following paragraphs from the {title} section of a paper, please provide specific suggestions for improvement.
+    Given the following html string from the {title} section of a paper, please provide specific suggestions for improvement.
     For each paragraph, identify and correct any spelling mistakes, grammar issues, and phrasing that could be enhanced.
     Additionally, highlight any logical inconsistencies and suggest how they might be resolved.
     Aim to improve clarity, conciseness, and overall impact of the text.
-    This is content of {title}: {content}
+    This is the html string content of {title}: {content}
     {format_instructions}
     """,
     input_variables=["title", "content"],
@@ -76,6 +77,7 @@ heading_chain = heading_prompt | model | heading_parser
 section_chain = section_prompt | model | section_parser
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/')
 def index():
@@ -105,6 +107,7 @@ def headingCheck():
 @app.route('/sectionCheck', methods = ["POST"])
 def sectionCheck():
     try:
+        print(request.args)
         title = request.args['title']
         content = request.args["content"]
         return section_chain.invoke({"title": title, "content": content})
