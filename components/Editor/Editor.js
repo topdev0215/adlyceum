@@ -51,7 +51,7 @@ const Editor = ({ editorContent, setChangedContent, section, setSection, ...prop
     attribution: false,
     fontSizeDefaultSelection: "12",
     fontFamilySelection: true,
-    placeholderText: "Edit Your Content Here!",
+    placeholderText: "Edite aquí su contenido!",
     // toolbarButtons: ["wirisEditor", "wirisChemistry"],
     // imageEditButtons: ["wirisEditor", "wirisChemistry"],
     imageUploadMethod: "POST",

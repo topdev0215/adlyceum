@@ -11,6 +11,9 @@ config = load_dotenv(override=True)
 
 model = ChatOpenAI(model="gpt-4-1106-preview", temperature=0)
 
+class MdToHtml(BaseModel):
+    html: str = Field(description='Entire converted html string from md file')
+
 class RestrictionCheck(BaseModel):
     restriction: str = Field(description="Restriction alert of paper")
     status: str = Field(description="If there is no alert, it is 'ok'; if there is an alert, it is 'no'.")
@@ -26,9 +29,29 @@ class SectionSuggestions(BaseModel):
     alert: str = Field(description="This is the best serious alert of this section")
     aiContentRate: float = Field(description="Percentage of content identified as AI-generated.")
 
+html_parser = JsonOutputParser(pydantic_object=MdToHtml)
 restriction_parser = JsonOutputParser(pydantic_object=RestrictionCheck)
 heading_parser = JsonOutputParser(pydantic_object=HeadingSuggestion)
 section_parser = JsonOutputParser(pydantic_object=SectionSuggestions)
+
+mdtohtml_prompt = PromptTemplate(
+    template="""As md, latex to html converter, convert all md string to html string.
+    Md string: {md}
+    1. Keep following format:
+    <section>
+        <h1></h1>
+        <p></p>
+        <table></table>
+        <img></img>
+        <math xmlns="http://www.w3.org/1998/Math/MathML"></math>
+    </section>
+    2. Latex string must convert to html string
+    3. Don't miss any string.
+    {format_instructions}
+    """,
+    input_variables=['md'],
+    partial_variables={'format_instructions': html_parser.get_format_instructions()},
+)
 
 restriction_prompt = PromptTemplate(
     template="""
@@ -72,6 +95,7 @@ section_prompt = PromptTemplate(
     partial_variables={"format_instructions": section_parser.get_format_instructions()},
 )
 
+html_chain = mdtohtml_prompt | model | html_parser
 restriction_chain = restriction_prompt | model | restriction_parser
 heading_chain = heading_prompt | model | heading_parser
 section_chain = section_prompt | model | section_parser
@@ -82,6 +106,16 @@ CORS(app)
 @app.route('/')
 def index():
     return 'index'
+
+@app.route('/htmlConvert', methods = ['POST'])
+def htmlConvert():
+    try:
+        md = request.args['md']
+        return model.invoke('hello')
+    except KeyError:
+        return "The 'heading' parameter is missing from the request."
+    except Exception as e:
+        return f"An unexpected error occurred:{str(e)}"
 
 @app.route('/restrictionCheck', methods = ["POST"])
 def restrictionCheck():

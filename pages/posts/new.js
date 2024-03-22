@@ -263,18 +263,18 @@ const NewPost = (props) => {
               <a
                 className="text-other mr-8 text-2xl cursor-pointer hover:text-primary hover:underline hover:underline-offset-1"
                 onClick={suggestionViewSet}
-                children={`${suggestionView ? "Hide Suggestion" : "Show Suggestion"}`}
+                children={`${suggestionView ? "Ocultar Sugerencia" : "Mostrar sugerencia"}`}
               />
             )}
             <a
               className="text-other text-2xl cursor-pointer hover:text-primary hover:underline hover:underline-offset-1"
               onClick={editViewSet}
-              children={!editView ? "Edit Document" : "Close Editor"}
+              children={!editView ? "Editar documento" : "Cerrar editor"}
             />
             <a
               className="text-other ml-8 text-2xl cursor-pointer hover:text-primary hover:underline hover:underline-offset-1"
               onClick={saveDocument}
-              children="Save Document"
+              children="Guardar documento"
             />
           </div>
         </TopBar>

@@ -16,7 +16,7 @@ const PostView = ({
 }) => {
   const [editorContent, setEditorContent] = useState("Select the tag");
   const [changedContent, setChangedContent] = useState("");
-  const [section, setSection] = useState("Section Title");
+  const [section, setSection] = useState("Sección Título");
   const [showFiles, setshowFiles] = useState(false);
   const toggleShowFiles = () => setshowFiles(!showFiles);
   const author = post?.author;
