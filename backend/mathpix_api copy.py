@@ -7,8 +7,8 @@ options = {
 }
 r = requests.post("https://api.mathpix.com/v3/pdf",
     headers={
-        "app_id": "adlyceum_5b5250_9a6003",
-        "app_key": "c625fa735ca427b7800a9d8674eb591bec2fb9871f19193a1460ab2dfc1580db"
+        "app_id": "",
+        "app_key": ""
     },
     data={
         "options_json": json.dumps(options)
