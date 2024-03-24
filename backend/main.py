@@ -7,6 +7,10 @@ from langchain.prompts import PromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.pydantic_v1 import BaseModel, Field
 
+from pdfdomd import pdf_to_md
+from htmlcontrol import htmlcontrol
+
+# AI model check
 config = load_dotenv(override=True)
 
 model = ChatOpenAI(model="gpt-4-1106-preview", temperature=0)
@@ -106,6 +110,11 @@ CORS(app)
 @app.route('/')
 def index():
     return 'index'
+
+@app.route('./pdftohtml', methods = ['POST'])
+def pdftohtml():
+    
+    
 
 @app.route('/htmlConvert', methods = ['POST'])
 def htmlConvert():
